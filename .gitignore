@@ -1,0 +1,17 @@
+.DS_Store
+.vscode
+.git
+git
+
+*.h.gch
+
+# test.c
+# main*.c
+a.out
+
+obj
+libftprintf.a
+
+tester
+printf-tester-tokyo
+printf-unit-test
