@@ -1,0 +1,6 @@
+
+引数と標準入力、曖昧にして使ってない？
+	https://qiita.com/190131start/items/4e707c499c877649d5f6
+
+Linuxカーネル: システムコールの実行フロー
+	https://qiita.com/TK_Yudai/items/c97b5255a78d38c478f4

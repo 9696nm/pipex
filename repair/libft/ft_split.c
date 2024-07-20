@@ -12,6 +12,81 @@
 
 #include "libft.h"
 
+static int	section_count(char *str, char c)
+{
+	int	section_len;
+
+	section_len = 1;
+	while (*str)
+		if (*str++ == c)
+			section_len++;
+	return (section_len);
+}
+
+static int	put_token(char *src, char c, char **res, int token)
+{
+	char	*endp;
+
+	endp = ft_strchr(src, c);
+	if (endp)
+		res[token] = ft_substr(src, 0, endp - src);
+	else
+		res[token] = ft_strdup(src);
+	if (res[token] == NULL)
+	{
+		while (token--)
+			free(res[token]);
+		return (-1);
+	}
+	if (endp && *endp)
+		return (put_token(endp + 1, c, res, token + 1));
+	res[token + 1] = NULL;
+	return (0);
+}
+
+char	**ft_split(char const *src, char c)
+{
+	char	**res;
+
+	res = malloc(sizeof(char *) * (section_count((char *)src, c) + 1));
+	if (res == NULL)
+		return (NULL);
+	if (put_token((char *)src, c, res, 0) == -1)
+	{
+		free(res);
+		res = NULL;
+	}
+	return (res);
+}
+
+// #include <stdio.h>
+// #include <string.h>
+
+// int	main(void)
+// {
+// 	char	*src = ",abc,12,,";
+// 	char	c = '\0';
+
+// 	char	**res = ft_split(src, c);
+// 	if (res)
+// 	{
+// 		for (int i = 0; res[i]; i++)
+// 			printf("%s\n", res[i]);;
+// 		for (int i = 0; res[i]; i++)
+// 			free(res[i]);
+// 		free(res);
+// 	}
+// 	else
+// 		printf("%p\n", res);
+// 	return (0);
+// }
+
+// __attribute__((destructor))
+// static void destructor() {
+//     system("leaks -q a.out");
+// }
+
+/*
 static int	check_clause(const char *src, const char *cstr)
 {
 	size_t	i;
@@ -116,28 +191,4 @@ char	**ft_split(char const *src, char c)
 		free(*res++);
 	return (NULL);
 }
-
-// #include <stdio.h>
-// #include <string.h>
-
-// int	main(void)
-// {
-// 	char	**expected = (char*[6]){"hello,world,42,tokyo", NULL};
-// 	char	*src = "hello,world,42,tokyo";
-// 	// char	*cstr = "012";
-// 	char	cstr = ' ';
-// 	char	**res;
-
-// 	res = ft_split(src, cstr);
-// 	if (res)
-// 	{
-// 		for (int i = 0; res[i]; i++)
-// 			printf("%s$\n", res[i]);
-// 		for (int i = 0; res[i]; i++)
-// 			printf("%s$\n", expected[i]);
-// 		free (res);
-// 	}
-// 	else
-// 		printf("Memory allocation error.\n");
-// 	return (0);
-// }
+*/
