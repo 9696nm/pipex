@@ -6,16 +6,14 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:49:03 by hana              #+#    #+#             */
-/*   Updated: 2024/07/19 17:59:13 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/17 13:35:19 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../pipex.h"
+#include "../headder/pipex.h"
 #include <stdio.h>
 
-extern char	**environ;
-
-static char **setenvp(void)
+static char	**setenvp(char **environ)
 {
 	int	i;
 
@@ -27,22 +25,7 @@ static char **setenvp(void)
 	return (NULL);
 }
 
-static char	*pathjoin(char *dir, char *cmd)
-{
-	int		buffer;
-	char	*path;
-
-	buffer = (ft_strlen(dir) + 1 + ft_strlen(cmd)) + 1;
-	path = malloc(sizeof(char) * (buffer));
-	if (path == NULL)
-		return (NULL);
-	ft_strlcpy(path, dir, buffer);
-	ft_strlcat(path, "/", buffer);
-	ft_strlcat(path, cmd, buffer);
-	return (path);
-}
-
-static char	*accesscheck(char **envp, char *cmd)
+static char	*pathsearch(char **envp, char *cmd)
 {
 	int		i;
 	char	*path;
@@ -50,7 +33,7 @@ static char	*accesscheck(char **envp, char *cmd)
 	i = 0;
 	while (envp[i])
 	{
-		path = pathjoin(envp[i++], cmd);
+		path = acrossjoin(envp[i++], cmd, "/");
 		if (path == NULL || access(path, F_OK) == 0)
 			return (path);
 		free(path);
@@ -58,33 +41,85 @@ static char	*accesscheck(char **envp, char *cmd)
 	return (NULL);
 }
 
-static void	execcmd(char *path)
+static void	execcmd(char **envp, char *cmd)
 {
-	char	*exargv[] = {"cat", "infile", NULL};
-	// char	*exargv[] = {"ls", "-a", NULL};
-	
-	if (path == NULL)
-		return ;
-	execve(path, exargv, NULL);
-	free(path);
+	char	*path;
+	char	**exargv;
+
+	exargv = ft_split(cmd, ' ');
+	path = pathsearch(envp, exargv[0]);
+	if (path)
+	{
+		execve(path, exargv, NULL);
+		free(path);
+	}
+	freedoble(&exargv);
 }
 
-int	main(int argc, char *argv[])
+static int	pipeout(char **argv, char **envp)
 {
-	int		i;
-	char	**envp;
+	int		pipefd[2];
 	pid_t	pid;
 
-	envp = setenvp();
-	if (envp == NULL)
-		return (printf("PATH is not found\n"), 0);
+	if (pipe(pipefd) == -1)
+		return (perror("pipe\n"), 0);
 	pid = fork();
 	if (pid == 0)
-		execcmd(accesscheck(envp, "cat"));
-	i = 0;
-	while (envp[i])
-		free(envp[i++]);
-	free(envp);
+	{
+		close(pipefd[READ]);
+		if (dup2(pipefd[WRITE], STDOUT_FILENO) == -1)
+			return (-1);
+		execcmd(envp, *argv);
+		close(pipefd[WRITE]);
+	}
+	else
+	{
+		close(pipefd[WRITE]);
+		if (dup2(pipefd[READ], STDIN_FILENO) == -1)
+			return (-1);
+		close(pipefd[READ]);
+	}
+	return (0);
+}
+
+static int	fileout(char **argv, char **envp, int fd)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		if (dup2(fd, STDOUT_FILENO) == -1)
+			return (-1);
+		execcmd(envp, *argv);
+	}
+	return (0);	
+}
+
+static int	read_check(char **argv, char **envp)
+{
+	int	fd;
+
+	fd = open((argv++)[0], O_RDONLY);
+	if (dup2(fd, STDIN_FILENO) == -1)
+		return (-1);
+	while (2 < arraylen(argv))
+		pipeout(argv++, envp);
+	fileout(argv++, envp, open(argv[1], O_WRONLY | O_CREAT | O_TRUNC , 0664));
+	return (0);
+}
+
+int	main(int argc, char *argv[], char **environ)
+{
+	int		fl_heardoc;
+	char	**envp;
+
+	envp = setenvp(environ);
+	if (envp == NULL)
+		return (perror("envp\n"), 0);
+	if (2 < argc)
+		read_check(++argv, envp);
+	freedoble(&envp);
 	return (0);
 }
 

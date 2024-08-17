@@ -4,3 +4,12 @@
 
 Linuxカーネル: システムコールの実行フロー
 	https://qiita.com/TK_Yudai/items/c97b5255a78d38c478f4
+
+パイプの仕組みを図で説明してみる
+	https://sgyatto.hatenablog.com/entry/2019/06/02/125533
+
+パイプを実装してみた
+	https://rakiyama0229.hatenablog.jp/entry/2021/07/29/135959
+
+リダイレクトの仕組み
+	https://christina04.hatenablog.com/entry/io-redirection
