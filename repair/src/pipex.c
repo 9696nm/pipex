@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:49:03 by hana              #+#    #+#             */
-/*   Updated: 2024/08/19 16:34:34 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 19:02:07 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ static char	*pathsearch(char **envp, char *cmd)
 			return (path);
 		free(path);
 	}
+	write(STDERR_FILENO, cmd, ft_strlen(cmd));
+	write(STDERR_FILENO, ": command not found\n", 20);
 	return (NULL);
 }
 
@@ -47,6 +49,8 @@ int	execcmd(char **envp, char *cmd)
 	char	**exargv;
 
 	exargv = ft_split(cmd, ' ');
+	if (exargv == NULL)
+		return (-1);
 	path = pathsearch(envp, exargv[0]);
 	if (path)
 	{
@@ -54,6 +58,7 @@ int	execcmd(char **envp, char *cmd)
 		free(path);
 	}
 	freedoble(&exargv);
+	return (0);
 }
 
 int	main(int argc, char *argv[], char **environ)
@@ -64,7 +69,7 @@ int	main(int argc, char *argv[], char **environ)
 	envp = setenvp(environ);
 	if (envp == NULL)
 		return (perror("envp\n"), 0);
-	if (2 < argc)
+	if (3 < argc)
 		read_check(++argv, envp);
 	freedoble(&envp);
 	return (0);
