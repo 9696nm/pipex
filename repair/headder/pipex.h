@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 17:20:27 by hmori             #+#    #+#             */
-/*   Updated: 2024/08/19 15:55:13 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 22:38:43 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ typedef enum e_pipe
 {
 	READ = 0,
 	WRITE = 1
-}   t_pipe;
+}	t_pipe;
 
 typedef enum e_flag
 {
 	ENABLE_HERE_DOC = 0
-}   t_flag;
+}	t_flag;
 
 typedef struct s_readline
 {
@@ -62,7 +62,7 @@ char	*read_heredoc(int fd, char *endcmd);
 
 char	*acrossjoin(char *front, char *bottom, char *ch);
 
-int 	arraylen(char **array);
+int		arraylen(char **array);
 void	freedoble(char ***array);
 
 #endif
