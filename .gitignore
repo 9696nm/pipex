@@ -12,6 +12,5 @@ a.out
 obj
 libftprintf.a
 
-tester
-printf-tester-tokyo
-printf-unit-test
+pipex_tester_42
+pipex-tester

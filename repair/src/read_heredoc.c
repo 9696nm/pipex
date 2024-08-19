@@ -6,12 +6,11 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 15:10:32 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 18:40:47 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 22:26:03 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headder/pipex.h"
-#include <stdio.h>
 
 static char	*rescopy(t_rline set, char **oldres)
 {
@@ -49,24 +48,24 @@ static char	*read_line(int fd)
 
 static char	*concat_list(t_list *lst)
 {
-	size_t	len;
+	size_t	buffer;
 	char	*result;
 	t_list	*lstcopy;
 
-	len = 0;
+	buffer = 1;
 	lstcopy = lst;
 	while (lstcopy->next)
 	{
-		len += ft_strlen(lstcopy->next->content);
+		buffer += ft_strlen(lstcopy->next->content);
 		lstcopy = lstcopy->next;
 	}
-	result = malloc(sizeof(char) * (len + 1));
+	result = malloc(sizeof(char) * (buffer));
 	if (result == NULL)
 		return (NULL);
 	*result = '\0';
 	while (lst->next)
 	{
-		ft_strlcat(result, lst->next->content, len);
+		ft_strlcat(result, lst->next->content, buffer);
 		lst = lst->next;
 	}
 	return (result);

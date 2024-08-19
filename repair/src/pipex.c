@@ -6,12 +6,11 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:49:03 by hana              #+#    #+#             */
-/*   Updated: 2024/08/19 19:06:35 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 20:03:05 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headder/pipex.h"
-#include <stdio.h>
 
 static char	**setenvp(char **environ)
 {
