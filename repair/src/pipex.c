@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 16:49:03 by hana              #+#    #+#             */
-/*   Updated: 2024/08/19 19:02:07 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 19:06:35 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ int	execcmd(char **envp, char *cmd)
 
 int	main(int argc, char *argv[], char **environ)
 {
-	int		fl_heardoc;
 	char	**envp;
 
 	envp = setenvp(environ);

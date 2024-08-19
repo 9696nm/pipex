@@ -6,14 +6,14 @@
 #    By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/19 17:17:12 by hmori             #+#    #+#              #
-#    Updated: 2024/08/19 16:29:20 by hana/hmori       ###   ########.fr        #
+#    Updated: 2024/08/19 19:05:51 by hana/hmori       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC_FILES = pipex.c array_units.c read_heredoc.c 
+SRC_FILES = pipex.c pipe_units.c read_heredoc.c array_units.c str_units.c
 LIBFTA = libft/libft.a
 
 SRC_DIR = src
