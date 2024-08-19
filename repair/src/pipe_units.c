@@ -6,20 +6,21 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 05:22:36 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 15:52:12 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 18:48:26 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headder/pipex.h"
 
-static int	input_set(char **argv)
+static int	input_set(char **argv, int bitbask)
 {
 	int	fd;
-	
-	fd = open((argv++)[0], O_RDONLY);
+
+	fd = open(argv[0], bitbask);
 	if (fd == -1)
 	{
-		perror("bash: mitiontest");
+		write(STDERR_FILENO, "bash: ", 6);
+		perror(argv[0]);
 		return (-1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
@@ -82,10 +83,18 @@ static int	pipeout(char **argv, char **envp)
 	return (0);
 }
 
-static int	fileout(char **argv, char **envp, int fd)
+static int	fileout(char **argv, char **envp, int bitmask)
 {
+	int		fd;
 	pid_t	pid;
 
+	fd = open(argv[1], bitmask, 0664);
+	if (fd == -1)
+	{
+		write(STDERR_FILENO, "bash: ", 6);
+		perror(argv[1]);
+		return (-1);
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -93,7 +102,7 @@ static int	fileout(char **argv, char **envp, int fd)
 			return (-1);
 		execcmd(envp, *argv);
 	}
-	return (0);	
+	return (0);
 }
 
 int	read_check(char **argv, char **envp)
@@ -103,19 +112,19 @@ int	read_check(char **argv, char **envp)
 	flag_hd = 0b0;
 	if (ft_strncmp(argv[0], "here_doc", ft_strlen(argv[0])) == 0)
 	{
-		flag_hd = 1 << 0;
+		flag_hd = 1 << ENABLE_HERE_DOC;
 		if (heredoc_set(argv) == -1)
 			return (-1);
 		argv += 2;
 	}
 	else
-		if (input_set(argv++) == -1)
+		if (input_set(argv++, O_RDONLY) == -1)
 			return (-1);
 	while (2 < arraylen(argv))
 		pipeout(argv++, envp);
-	if (flag_hd & (1 << 0))
-		fileout(argv++, envp, open(argv[1], O_WRONLY | O_CREAT | O_TRUNC , 0664));
+	if (flag_hd & (1 << ENABLE_HERE_DOC))
+		fileout(argv++, envp, O_WRONLY | O_CREAT | O_APPEND);
 	else
-		fileout(argv++, envp, open(argv[1], O_WRONLY | O_CREAT | O_APPEND , 0664));
+		fileout(argv++, envp, O_WRONLY | O_CREAT | O_TRUNC);
 	return (0);
 }

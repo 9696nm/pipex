@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 15:10:32 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 03:59:17 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 18:40:47 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ static char	*concat_list(t_list *lst)
 	lstcopy = lst;
 	while (lstcopy->next)
 	{
+		len += ft_strlen(lstcopy->next->content);
 		lstcopy = lstcopy->next;
-		len += ft_strlen(lstcopy->content);
 	}
 	result = malloc(sizeof(char) * (len + 1));
 	if (result == NULL)
@@ -66,8 +66,8 @@ static char	*concat_list(t_list *lst)
 	*result = '\0';
 	while (lst->next)
 	{
+		ft_strlcat(result, lst->next->content, len);
 		lst = lst->next;
-		ft_strlcat(result, lst->content, len - ft_strlen(result));
 	}
 	return (result);
 }
@@ -80,34 +80,38 @@ static void	content_clear(void *content)
 
 char	*read_heredoc(int fd, char *endstr)
 {
+	char	*pull;
 	char	*result;
 	t_list	*lst;
-	t_list	*new;
 
 	lst = ft_lstnew(NULL);
 	if (lst == NULL)
 		return (NULL);
-	result == NULL;
+	result = NULL;
 	while (result == NULL)
 	{
-		new = ft_lstnew(read_line(fd));
-		ft_lstadd_back(&lst, new);
-		if (new == NULL || new->content == NULL)
+		pull = read_line(fd);
+		if (pull == NULL)
 			break ;
-		if (ft_strncmp(new->content, endstr, ft_strlen(new->content)) == '\n')
+		if (ft_strncmp(pull, endstr, ft_strlen(pull)) == '\n')
+		{
 			result = concat_list(lst);
+			free(pull);
+		}
+		else
+			ft_lstadd_back(&lst, ft_lstnew(pull));
 	}
 	ft_lstclear(&lst, *content_clear);
 	free(lst);
 	return (result);
 }
 
-int	main(void)
-{
-	char	*buf;
+// int	main(void)
+// {
+// 	char	*buf;
 
-	buf = read_heredoc(STDIN_FILENO, "EOF");
-	// printf("ret:%s\n", buf);
-	// free(buf);
-	return (0);
-}
+// 	buf = read_heredoc(STDIN_FILENO, "EOF");
+// 	printf("ret:%s\n", buf);
+// 	free(buf);
+// 	return (0);
+// }
