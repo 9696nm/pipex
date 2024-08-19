@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hmori <hmori@student.42.fr>                +#+  +:+       +#+         #
+#    By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/27 18:46:16 by hmori             #+#    #+#              #
-#    Updated: 2024/05/20 11:50:59 by hmori            ###   ########.fr        #
+#    Updated: 2024/08/19 04:10:52 by hana/hmori       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ NAME = libft.a
 
 all: $(NAME)
 
-ifdef ALT
+ifeq ($(ALT),1)
 TARGET = $(BONUS_OBJ) $(OBJ_FILES)
 else
 TARGET = $(OBJ_FILES)
@@ -39,7 +39,7 @@ $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 bonus: $(BONUS_OBJ)
-	@$(MAKE) ALT=0 all
+	@$(MAKE) ALT=1 all
 
 clean:
 	@rm -rf $(OBJ_DIR)

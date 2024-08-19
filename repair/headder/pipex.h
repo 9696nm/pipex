@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 17:20:27 by hmori             #+#    #+#             */
-/*   Updated: 2024/08/17 15:26:27 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 15:55:13 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PIPEX_H
 
 # include <unistd.h> //system call
+# include <stdio.h> //perror
 # include <stdlib.h> //malloc
 # include <stdarg.h> //va_arg
 # include <sys/wait.h> //waitpidq
@@ -25,7 +26,6 @@
 
 # include <errno.h> //error parameter
 
-# include "gnl.h"
 # include "../libft/libft.h"
 
 # ifndef BUFFER_SIZE
@@ -37,16 +37,32 @@
 #  define BUFFER_SIZE 65536
 # endif
 
-typedef enum t_pipe
+typedef enum e_pipe
 {
-    READ = 0,
-    WRITE = 1
-} e_pipe;
+	READ = 0,
+	WRITE = 1
+}   t_pipe;
+
+typedef enum e_flag
+{
+	ENABLE_HERE_DOC = 0
+}   t_flag;
+
+typedef struct s_readline
+{
+	ssize_t	read_len;
+	char	pull[BUFFER_SIZE + 1];
+}	t_rline;
+
+int		execcmd(char **envp, char *cmd);
+
+int		read_check(char **argv, char **envp);
+
+char	*read_heredoc(int fd, char *endcmd);
 
 char	*acrossjoin(char *front, char *bottom, char *ch);
 
 int 	arraylen(char **array);
 void	freedoble(char ***array);
-char	*read_heredoc(int fd, char *endcmd);
 
 #endif

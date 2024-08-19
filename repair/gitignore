@@ -19,3 +19,9 @@ printf-tester-tokyo
 printf-unit-test
 
 *.txt
+
+pipex
+infile
+outfile
+test
+mitiontest

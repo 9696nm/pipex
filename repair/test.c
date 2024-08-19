@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 01:28:27 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/17 22:10:08 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/19 15:22:55 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 
 int	main(void)
 {
-	char	*buf;
+	int	fd;
 
-	buf = ft_strnstr("123456123a", "123a", 8);
-	printf("%p\n", 0);
+	fd = open("mitiontest", O_RDONLY);
+	printf("%d\n", fd);
 	return (0);
 }
 
