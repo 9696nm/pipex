@@ -6,11 +6,11 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/17 15:10:32 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 22:26:03 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/22 16:49:24 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headder/pipex.h"
+#include "../include/pipex.h"
 
 static char	*rescopy(t_rline set, char **oldres)
 {
@@ -32,7 +32,7 @@ static char	*read_line(int fd)
 		return (NULL);
 	*result = '\0';
 	set.read_len = BUFFER_SIZE;
-	write(STDOUT_FILENO, "> ", 2);
+	write(STDOUT_FILENO, "pipe heredoc> ", 14);
 	while (set.read_len && result)
 	{
 		set.read_len = read(fd, set.pull, BUFFER_SIZE);

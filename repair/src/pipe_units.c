@@ -6,11 +6,11 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 05:22:36 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 22:20:25 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/22 16:49:18 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headder/pipex.h"
+#include "../include/pipex.h"
 
 static int	input_set(char **argv, int bitbask)
 {

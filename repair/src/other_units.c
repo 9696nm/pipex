@@ -6,11 +6,11 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/26 15:13:42 by hana/hmori        #+#    #+#             */
-/*   Updated: 2024/08/19 22:35:37 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/22 16:49:16 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headder/pipex.h"
+#include "../include/pipex.h"
 
 char	*acrossjoin(char *front, char *bottom, char *ch)
 {
