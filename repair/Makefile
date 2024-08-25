@@ -6,7 +6,7 @@
 #    By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/19 17:17:12 by hmori             #+#    #+#              #
-#    Updated: 2024/08/22 17:34:17 by hana/hmori       ###   ########.fr        #
+#    Updated: 2024/08/24 22:46:25 by hana/hmori       ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,11 +22,11 @@ SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ_DIR = obj
 OBJ_FILES = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
 
-PIPEX = pipex
+NAME = pipex
 
-all: $(PIPEX)
+all: $(LIBFTA) $(NAME)
 
-$(PIPEX): $(OBJ_FILES) $(LIBFTA)
+$(NAME): $(OBJ_FILES) $(LIBFTA)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(OBJ_DIR):
@@ -46,13 +46,13 @@ clean:
 
 fclean: clean
 	@make -C libft/ fclean
-	@rm -f $(PIPEX)
+	@rm -f $(NAME)
 
 re: fclean all
 
 .DEFAULT_GOAL := all
 
-.PHONY: all clean fclean bonus re $(LIBFTA)
+.PHONY: all clean fclean bonus re
 
 # CC = cc
 # CFLAGS = -Wall -Wextra -Werror
