@@ -12,19 +12,22 @@
 
 #include "../include/pipex.h"
 
-static int	input_set(char **argv, int bitbask)
+static int	input_set(char *argv, int bitbask)
 {
 	int	fd;
 
-	fd = open(argv[0], bitbask);
+	fd = open(argv, bitbask);
 	if (fd == -1)
 	{
-		write(STDERR_FILENO, "bash: ", 6);
-		perror(argv[0]);
+		ft_putstr_fd("bash: ", STDERR_FILENO);
+		perror(argv);
 		return (-1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
 		return (-1);
+	}
 	return (0);
 }
 
@@ -42,21 +45,20 @@ static int	heredoc_set(char **argv)
 		close(pipefd[READ]);
 		heredoc = read_heredoc(STDIN_FILENO, argv[1]);
 		if (heredoc == NULL)
-			exit(1);
+			exit(EXIT_FAILURE);
 		write(pipefd[WRITE], heredoc, ft_strlen(heredoc));
 		free(heredoc);
 		close(pipefd[WRITE]);
-		exit(0);
+		exit(EXIT_SUCCESS);
 	}
 	wait(NULL);
 	close(pipefd[WRITE]);
-	if (dup2(pipefd[READ], STDIN_FILENO) == -1)
-		return (-1);
+	dup2(pipefd[READ], STDIN_FILENO);
 	close(pipefd[READ]);
 	return (0);
 }
 
-static int	pipeout(char **argv, char **envp)
+static int	pipeout(char *argv)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -68,22 +70,16 @@ static int	pipeout(char **argv, char **envp)
 	{
 		close(pipefd[READ]);
 		if (dup2(pipefd[WRITE], STDOUT_FILENO) == -1)
-			exit(1);
-		if (execcmd(envp, *argv) == -1)
-			exit(1);
-		close(pipefd[WRITE]);
+			errorexit("dup2");
+		execset(argv);
 	}
-	else
-	{
-		close(pipefd[WRITE]);
-		if (dup2(pipefd[READ], STDIN_FILENO) == -1)
-			return (-1);
-		close(pipefd[READ]);
-	}
+	close(pipefd[WRITE]);
+	dup2(pipefd[READ], STDIN_FILENO);
+	close(pipefd[READ]);
 	return (0);
 }
 
-static int	fileout(char **argv, char **envp, int bitmask)
+static int	fileout(char **argv, int bitmask)
 {
 	int		fd;
 	pid_t	pid;
@@ -91,40 +87,41 @@ static int	fileout(char **argv, char **envp, int bitmask)
 	fd = open(argv[1], bitmask, 0664);
 	if (fd == -1)
 	{
-		write(STDERR_FILENO, "bash: ", 6);
-		perror(argv[1]);
-		return (-1);
+		ft_putstr_fd("bash: ", STDERR_FILENO);
+		errorexit(argv[1]);
 	}
 	pid = fork();
 	if (pid == 0)
 	{
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			return (-1);
-		execcmd(envp, *argv);
+			errorexit("dup2");
+		execset(argv[0]);
 	}
+	close(fd);
 	return (0);
 }
 
-int	read_check(char **argv, char **envp)
+int	main(int argc, char *argv[])
 {
 	unsigned int	flag_hd;
 
+	if (argc < 3)
+		return (0);
 	flag_hd = 0b0;
+	argv++;
 	if (ft_strncmp(argv[0], "here_doc", ft_strlen(argv[0])) == 0)
 	{
 		flag_hd = 1 << ENABLE_HERE_DOC;
-		if (heredoc_set(argv) == -1)
+		if (heredoc_set(argv++) == -1)
 			return (-1);
-		argv += 2;
 	}
 	else
-		if (input_set(argv++, O_RDONLY) == -1)
-			return (-1);
-	while (2 < arraylen(argv))
-		pipeout(argv++, envp);
+		input_set(argv++[0], O_RDONLY);
+	while (4 < argc--)
+		pipeout(*argv++);
 	if (flag_hd & (1 << ENABLE_HERE_DOC))
-		fileout(argv++, envp, O_WRONLY | O_CREAT | O_APPEND);
+		fileout(argv, O_WRONLY | O_CREAT | O_APPEND);
 	else
-		fileout(argv++, envp, O_WRONLY | O_CREAT | O_TRUNC);
+		fileout(argv, O_WRONLY | O_CREAT | O_TRUNC);
 	return (0);
 }

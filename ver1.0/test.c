@@ -16,14 +16,9 @@
 int	main(void)
 {
 	int	fd;
-	char	*exearg[] = {"grep", "a", "infile", NULL};
-	pid_t	pid;
 
-	// fd = open("nothing", O_RDONLY);
-	pid = fork();
-	if (pid == 0)
-		execve(NULL, exearg, NULL);
-	perror(NULL);
+	// fd = open("mitiontest", O_RDONLY);
+	printf("%s\n", "\033[31mError");
 	return (0);
 }
 

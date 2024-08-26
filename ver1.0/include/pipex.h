@@ -54,17 +54,15 @@ typedef struct s_readline
 	char	pull[BUFFER_SIZE + 1];
 }	t_rline;
 
-extern char	**environ;
+int		execcmd(char **envp, char *cmd);
 
-void	execset(char *cmd);
-
-int		read_check(char **argv);
+int		read_check(char **argv, char **envp);
 
 char	*read_heredoc(int fd, char *endcmd);
 
-void	errorexit(const char *errstr);
-
 char	*acrossjoin(char *front, char *bottom, char *ch);
 
+int		arraylen(char **array);
 void	freedoble(char ***array);
+
 #endif

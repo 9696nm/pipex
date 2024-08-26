@@ -37,13 +37,13 @@ TARGET = $(OBJ_FILES)
 endif
 
 $(NAME): $(TARGET)
-	ar rcs $@ $^
+	@ar rcs $@ $^
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 bonus: $(BONUS_OBJ)
 	@$(MAKE) ALT=1 all

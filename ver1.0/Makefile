@@ -13,44 +13,34 @@
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRC_FILES = pipex.c pipex_units.c
-BONUS_SRC_FILES = pipex_bonus.c pipex_units.c read_heredoc.c
+SRC_FILES = pipex.c pipe_units.c read_heredoc.c other_units.c
 
 LIBFT = libft
 LIBFTA = $(LIBFT)/libft.a
 
 SRC_DIR = src
+SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 
 OBJ_DIR = obj
 OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC_FILES))
-BONUS_OBJS = $(patsubst %.c, $(OBJ_DIR)/%.o, $(BONUS_SRC_FILES))
-
-ifeq ($(BONUS),1)
-TARGET_OBJS = $(BONUS_OBJS)
-REMOVE_OBJS = $(filter-out $(BONUS_OBJS), $(OBJS))
-else
-TARGET_OBJS = $(OBJS)
-REMOVE_OBJS = $(filter-out $(OBJS), $(BONUS_OBJS))
-endif
 
 NAME = pipex
 
-all: remove-other-obj $(LIBFT) $(NAME)
+all: $(LIBFT) $(NAME)
 
-$(NAME): $(TARGET_OBJS) $(LIBFTA)
-	$(CC) $(CFLAGS) -o $@ $^
+$(NAME): $(OBJS) $(LIBFTA)
+	@$(CC) $(CFLAGS) -o $@ $^
 
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT):
 	@make -C libft/ bonus
 
-bonus:
-	@$(MAKE) BONUS=1 all
+bonus: all
 
 clean:
 	@make -C libft/ clean
@@ -60,16 +50,42 @@ fclean: clean
 	@make -C libft/ fclean
 	@rm -f $(NAME)
 
-remove-other-obj:
-	@for file in $(REMOVE_OBJS); do \
-		if [ -e "$$file" ]; then \
-			rm -f "$$file"; \
-		fi \
-	done
-
 re: fclean all
 
 .DEFAULT_GOAL := all
 
 .PHONY: all clean fclean bonus re $(LIBFT)
 
+# CC = cc
+# CFLAGS = -Wall -Wextra -Werror
+
+# SRC_FILES = pipex.c pipe_units.c read_heredoc.c other_units.c
+# LIBFTA = libft/libft.a
+
+# SRC_DIR = src
+# SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
+
+# NAME = pipex
+
+# all: $(NAME)
+
+# $(NAME): $(SRCS) $(LIBFTA)
+# 	@$(CC) $(CFLAGS) -o $(NAME) $(SRCS) $(LIBFTA)
+
+# $(LIBFTA):
+# 	@make -C libft/ bonus
+
+# bonus: all
+
+# clean:
+# 	@make -C libft/ clean
+
+# fclean: clean
+# 	@make -C libft/ fclean
+# 	@rm -f $(NAME)
+
+# re: fclean all
+
+# .DEFAULT_GOAL := all
+
+# .PHONY: all clean fclean bonus re $(LIBFTA)

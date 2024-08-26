@@ -1,76 +1,86 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipe_units.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/12 16:49:03 by hana              #+#    #+#             */
-/*   Updated: 2024/08/24 22:26:24 by hana/hmori       ###   ########.fr       */
+/*   Created: 2024/08/19 05:22:36 by hana/hmori        #+#    #+#             */
+/*   Updated: 2024/08/22 16:49:18 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-static char	**setenvp(char **environ)
+static int	input_set(char *argv, int bitbask)
 {
-	int	i;
+	int	fd;
 
-	i = 0;
-	while (environ[i] && !ft_strnstr(environ[i], "PATH=", 5))
-		i++;
-	if (environ[i])
-		return (ft_split(environ[i], ':'));
-	return (NULL);
-}
-
-static char	*pathsearch(char **envp, char *cmd)
-{
-	int		i;
-	char	*path;
-
-	i = 0;
-	while (envp[i])
+	fd = open(argv, bitbask);
+	if (fd == -1)
 	{
-		path = acrossjoin(envp[i++], cmd, "/");
-		if (path == NULL || access(path, F_OK) == 0)
-			return (path);
-		free(path);
-	}
-	write(STDERR_FILENO, cmd, ft_strlen(cmd));
-	write(STDERR_FILENO, ": command not found\n", 20);
-	return (NULL);
-}
-
-int	execcmd(char **envp, char *cmd)
-{
-	char	*path;
-	char	**exargv;
-
-	exargv = ft_split(cmd, ' ');
-	if (exargv == NULL)
+		ft_putstr_fd("bash: ", STDERR_FILENO);
+		perror(argv);
 		return (-1);
-	path = pathsearch(envp, exargv[0]);
-	if (path)
-	{
-		execve(path, exargv, NULL);
-		free(path);
 	}
-	freedoble(&exargv);
+	if (dup2(fd, STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		return (-1);
+	}
 	return (0);
 }
 
-int	main(int argc, char *argv[], char **environ)
+static int	pipeout(char *argv)
 {
-	char	**envp;
+	int		pipefd[2];
+	pid_t	pid;
 
-	envp = setenvp(environ);
-	if (envp == NULL)
-		return (perror("envp\n"), 0);
-	if (3 < argc)
-		read_check(++argv, envp);
-	freedoble(&envp);
+	if (pipe(pipefd) == -1)
+		return (-1);
+	pid = fork();
+	if (pid == 0)
+	{
+		close(pipefd[READ]);
+		if (dup2(pipefd[WRITE], STDOUT_FILENO) == -1)
+			errorexit("dup2");
+		execset(argv);
+	}
+	close(pipefd[WRITE]);
+	dup2(pipefd[READ], STDIN_FILENO);
+	close(pipefd[READ]);
 	return (0);
 }
 
-//$ ps f -fA
+static int	fileout(char **argv, int bitmask)
+{
+	int		fd;
+	pid_t	pid;
+
+	fd = open(argv[1], bitmask, 0664);
+	if (fd == -1)
+	{
+		ft_putstr_fd("bash: ", STDERR_FILENO);
+		errorexit(argv[1]);
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		if (dup2(fd, STDOUT_FILENO) == -1)
+			errorexit("dup2");
+		execset(argv[0]);
+	}
+	close(fd);
+	return (0);
+}
+
+int	main(int argc, char *argv[])
+{
+	if (argc < 3)
+		return (0);
+	argv++;
+	input_set(argv++[0], O_RDONLY);
+	pipeout(*argv++);
+	fileout(argv, O_WRONLY | O_CREAT | O_TRUNC);
+	return (0);
+}
