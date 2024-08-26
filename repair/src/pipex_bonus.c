@@ -112,8 +112,10 @@ int	main(int argc, char *argv[])
 	if (ft_strncmp(argv[0], "here_doc", ft_strlen(argv[0])) == 0)
 	{
 		flag_hd = 1 << ENABLE_HERE_DOC;
-		if (heredoc_set(argv++) == -1)
+		if (heredoc_set(argv) == -1)
 			return (-1);
+		argv += 2;
+		argc -= 1;
 	}
 	else
 		input_set(argv++[0], O_RDONLY);
