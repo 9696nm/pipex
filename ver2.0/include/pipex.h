@@ -6,7 +6,7 @@
 /*   By: hana/hmori <sagiri.mori@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 17:20:27 by hmori             #+#    #+#             */
-/*   Updated: 2024/08/19 22:38:43 by hana/hmori       ###   ########.fr       */
+/*   Updated: 2024/08/29 17:46:57 by hana/hmori       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdio.h> //perror
 # include <stdlib.h> //malloc
 # include <stdarg.h> //va_arg
-# include <sys/wait.h> //waitpidq
+# include <sys/wait.h> //waitpid
 
 # include <stdint.h> //int value macro
 # include <stddef.h> //type size_t
